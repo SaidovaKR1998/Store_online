@@ -1,8 +1,3 @@
-from itertools import product
-
-from src.product import Product
-
-
 class Category:
     """Класс для представления категории товаров."""
 
@@ -25,12 +20,16 @@ class Category:
         Category.category_count += 1
         Category.product_count += len(products)
 
-    def add_product(self, product: Product):
+    def add_product(self, product):
         """
         Метод для добавления товара в категорию.
 
         :param product: Объект класса Product.
+        :raises TypeError: Если передается объект не класса Product.
         """
+        if not isinstance(product, Product):
+            raise TypeError("Можно добавлять только объекты класса Product")
+
         self.__products.append(product)
         Category.product_count += 1
 
