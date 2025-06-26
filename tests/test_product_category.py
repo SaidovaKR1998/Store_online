@@ -1,9 +1,7 @@
 # test_product_category.py
 import unittest
-
-from src.category import Category
-from src.product import Product
-
+from unittest.mock import patch
+from io import StringIO
 
 class TestProductCategory(unittest.TestCase):
     def setUp(self):
@@ -36,20 +34,24 @@ class TestProductCategory(unittest.TestCase):
         self.category.add_product(new_product)
         self.assertEqual(Category.product_count, initial_count + 1)
 
+    def test_add_invalid_product_type(self):
+        with self.assertRaises(TypeError):
+            self.category.add_product("Не продукт")
+
     def test_products_property(self):
         expected_output = "Телефон, 50000.0 руб. Остаток: 10 шт."
         self.assertIn(expected_output, self.category.products)
 
     def test_product_price_setter(self):
         # Проверяем, что нельзя установить отрицательную цену
-        import io
-        from contextlib import redirect_stdout
-
-        with io.StringIO() as buf, redirect_stdout(buf):
+        with patch('sys.stdout', new=StringIO()) as fake_out:
             self.product.price = -100
-            output = buf.getvalue()
-            self.assertIn("Цена не должна быть нулевая или отрицательная", output)
+            self.assertIn("Цена не должна быть нулевая или отрицательная", fake_out.getvalue())
         self.assertEqual(self.product.price, 50000.0)  # Цена не изменилась
+
+        # Проверяем, что цена действительно приватная
+        with self.assertRaises(AttributeError):
+            print(self.product.__price)
 
         # Проверяем корректное изменение цены
         self.product.price = 45000.0
