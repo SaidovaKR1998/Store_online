@@ -12,7 +12,7 @@ class Product:
         """
         self.name = name
         self.description = description
-        self._price = price  # Приватный атрибут
+        self.__price = price  # Приватный атрибут с двойным подчеркиванием
         self.quantity = quantity
 
         if price <= 0:
@@ -38,7 +38,7 @@ class Product:
     @property
     def price(self):
         """Геттер для цены."""
-        return self._price
+        return self.__price
 
     @price.setter
     def price(self, new_price):
@@ -46,5 +46,4 @@ class Product:
         if new_price <= 0:
             print("Цена не должна быть нулевая или отрицательная")
         else:
-            self._price = new_price
-
+            self.__price = new_price
