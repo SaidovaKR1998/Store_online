@@ -2,6 +2,8 @@
 import unittest
 from unittest.mock import patch
 from io import StringIO
+from product import Product
+from category import Category
 
 class TestProductCategory(unittest.TestCase):
     def setUp(self):
@@ -13,6 +15,7 @@ class TestProductCategory(unittest.TestCase):
             'quantity': 10
         }
         self.product = Product.new_product(self.product_data)
+        self.product2 = Product('Ноутбук', 'Игровой ноутбук', 100000.0, 5)
         self.category = Category(
             'Электроника',
             'Технические устройства',
@@ -29,9 +32,8 @@ class TestProductCategory(unittest.TestCase):
             print(self.category.__products)
 
     def test_add_product_to_category(self):
-        new_product = Product('Ноутбук', 'Игровой ноутбук', 100000.0, 5)
         initial_count = Category.product_count
-        self.category.add_product(new_product)
+        self.category.add_product(self.product2)
         self.assertEqual(Category.product_count, initial_count + 1)
 
     def test_add_invalid_product_type(self):
@@ -66,6 +68,40 @@ class TestProductCategory(unittest.TestCase):
         })
         self.assertIsInstance(product, Product)
         self.assertEqual(product.name, 'Планшет')
+
+    # Новые тесты для проверки добавленной функциональности
+
+    def test_product_str_representation(self):
+        """Тестируем строковое представление продукта"""
+        expected_str = "Телефон, 50000.0 руб. Остаток: 10 шт."
+        self.assertEqual(str(self.product), expected_str)
+
+    def test_category_str_representation(self):
+        """Тестируем строковое представление категории"""
+        # Добавляем второй продукт в категорию
+        self.category.add_product(self.product2)
+        expected_str = "Электроника, количество продуктов: 15 шт."  # 10 + 5
+        self.assertEqual(str(self.category), expected_str)
+
+    def test_product_addition(self):
+        """Тестируем сложение продуктов"""
+        # 50000 * 10 + 100000 * 5 = 500000 + 500000 = 1000000
+        total = self.product + self.product2
+        self.assertEqual(total, 1000000.0)
+
+    def test_product_addition_with_invalid_type(self):
+        """Тестируем сложение продукта с неверным типом"""
+        with self.assertRaises(TypeError):
+            result = self.product + "не продукт"
+
+    def test_category_products_property_optimization(self):
+        """Тестируем оптимизированный геттер products"""
+        # Добавляем второй продукт
+        self.category.add_product(self.product2)
+        output = self.category.products
+        self.assertIn("Телефон, 50000.0 руб. Остаток: 10 шт.", output)
+        self.assertIn("Ноутбук, 100000.0 руб. Остаток: 5 шт.", output)
+        self.assertEqual(output.count('\n'), 1)  # Проверяем, что одна строка разделена
 
 if __name__ == '__main__':
     unittest.main()
