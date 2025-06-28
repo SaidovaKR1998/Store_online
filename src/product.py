@@ -47,3 +47,13 @@ class Product:
             print("Цена не должна быть нулевая или отрицательная")
         else:
             self.__price = new_price
+
+    def __str__(self):
+        """Строковое представление продукта."""
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
+
+    def __add__(self, other):
+        """Сложение продуктов по общей стоимости."""
+        if not isinstance(other, Product):
+            raise TypeError("Можно складывать только объекты класса Product")
+        return self.price * self.quantity + other.price * other.quantity
