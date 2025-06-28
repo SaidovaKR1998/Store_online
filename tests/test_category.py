@@ -1,6 +1,6 @@
 import pytest
-from products.category import Category
-from products.product import Product
+from src.category import Category
+from src.product import Product
 
 
 def test_category_initialization():
@@ -11,7 +11,9 @@ def test_category_initialization():
 
     assert category.name == "Электроника"
     assert category.description == "Техника"
-    assert len(category.products) == 2
+    # Проверяем наличие продуктов в строке
+    assert "Телефон" in category.products
+    assert "Ноутбук" in category.products
 
 
 def test_category_count():

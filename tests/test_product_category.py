@@ -2,8 +2,8 @@
 import unittest
 from unittest.mock import patch
 from io import StringIO
-from product import Product
-from category import Category
+from src.product import Product
+from src.category import Category
 
 class TestProductCategory(unittest.TestCase):
     def setUp(self):
