@@ -26,11 +26,15 @@ class Category:
         """
         Метод для добавления товара в категорию.
 
-        :param product: Объект класса Product.
-        :raises TypeError: Если передается объект не класса Product.
+        :param product: Теперь проверяет, что объект является Product или его наследником
+        :raises TypeError: Если передается объект не класса Product или его наследников
         """
-        if not isinstance(product, Product):
-            raise TypeError("Можно добавлять только объекты класса Product")
+        if not issubclass(type(product), Product):
+            raise TypeError(
+                "Можно добавлять только объекты класса Product и его наследников")
+
+        if product in self.__products:
+            raise ValueError("Товар уже есть в категории")
 
         self.__products.append(product)
         Category.product_count += 1
@@ -44,3 +48,8 @@ class Category:
         """Строковое представление категории."""
         total_quantity = sum(product.quantity for product in self.__products)
         return f"{self.name}, количество продуктов: {total_quantity} шт."
+
+    @property
+    def products_list(self):
+        """Возвращает список продуктов (не строковое представление)."""
+        return self.__products
