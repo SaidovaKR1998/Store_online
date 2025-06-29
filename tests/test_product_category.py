@@ -4,6 +4,8 @@ from unittest.mock import patch
 from io import StringIO
 from src.product import Product
 from src.category import Category
+from src.smartphone import Smartphone  # NEW
+from src.lawn_grass import LawnGrass  # NEW
 
 class TestProductCategory(unittest.TestCase):
     def setUp(self):
@@ -20,6 +22,16 @@ class TestProductCategory(unittest.TestCase):
             'Электроника',
             'Технические устройства',
             [self.product]
+        )
+
+        # NEW: Тестовые данные для наследников
+        self.smartphone = Smartphone(
+            "iPhone 15", "Флагман", 120000.0, 8,
+            95.5, "15 Pro", 256, "Black"
+        )
+        self.lawn_grass = LawnGrass(
+            "Газон Премиум", "Мягкий газон", 1500.0, 50,
+            "Россия", "14 дней", "Изумрудный"
         )
 
     def test_product_creation(self):
@@ -103,5 +115,46 @@ class TestProductCategory(unittest.TestCase):
         self.assertIn("Ноутбук, 100000.0 руб. Остаток: 5 шт.", output)
         self.assertEqual(output.count('\n'), 1)  # Проверяем, что одна строка разделена
 
+    # === NEW: Тесты для наследников Product ===
+    def test_smartphone_creation(self):
+        self.assertEqual(self.smartphone.name, "iPhone 15")
+        self.assertEqual(self.smartphone.memory, 256)
+        self.assertEqual(self.smartphone.color, "Black")
+        self.assertEqual(self.smartphone.efficiency, 95.5)
+
+    def test_lawn_grass_creation(self):
+        self.assertEqual(self.lawn_grass.country, "Россия")
+        self.assertEqual(self.lawn_grass.germination_period, "14 дней")
+        self.assertEqual(self.lawn_grass.color, "Изумрудный")
+
+    def test_add_children_to_category(self):
+        """Тест добавления наследников в категорию"""
+        initial_count = Category.product_count
+        self.category.add_product(self.smartphone)
+        self.category.add_product(self.lawn_grass)
+        self.assertEqual(Category.product_count, initial_count + 2)
+        self.assertIn("iPhone 15", self.category.products)
+        self.assertIn("Газон Премиум", self.category.products)
+
+    def test_product_addition_same_class(self):
+        """Тест сложения объектов одного класса"""
+        smartphone2 = Smartphone("Galaxy", "Android", 80000.0, 3, 90.0, "S23", 128, "White")
+        total = self.smartphone + smartphone2
+        self.assertEqual(total, 120000.0 * 8 + 80000.0 * 3)
+
+        grass2 = LawnGrass("Трава", "Обычная", 1000.0, 30, "Беларусь", "10 дней", "Зелёный")
+        total_grass = self.lawn_grass + grass2
+        self.assertEqual(total_grass, 1500.0 * 50 + 1000.0 * 30)
+
+    def test_product_addition_different_classes(self):
+        """Тест попытки сложения разных классов"""
+        with self.assertRaises(TypeError):
+            _ = self.smartphone + self.lawn_grass
+
+        with self.assertRaises(TypeError):
+            _ = self.smartphone + self.product
+
+
 if __name__ == '__main__':
     unittest.main()
+
