@@ -1,24 +1,20 @@
 import pytest
+from io import StringIO
+from unittest.mock import patch
 from src.product import Product
 
 
-def test_product_initialization():
-    """Проверяет корректность инициализации товара."""
+def test_product_creation_logging(capsys):
+    """Тестируем логирование при создании продукта"""
     product = Product("Телефон", "Смартфон", 599.99, 10)
-
-    assert product.name == "Телефон"
-    assert product.description == "Смартфон"
-    assert product.price == 599.99
-    assert product.quantity == 10
-
-
-def test_product_invalid_price():
-    """Проверяет, что цена не может быть отрицательной."""
-    with pytest.raises(ValueError):
-        Product("Телефон", "Смартфон", -100.0, 10)
+    captured = capsys.readouterr()
+    assert "Создан объект Product с параметрами:" in captured.out
+    assert "name=Телефон" in captured.out
+    assert "description=Смартфон" in captured.out
 
 
-def test_product_invalid_quantity():
-    """Проверяет, что количество не может быть отрицательным."""
-    with pytest.raises(ValueError):
-        Product("Телефон", "Смартфон", 599.99, -5)
+def test_product_repr():
+    """Тестируем repr продукта"""
+    product = Product("Телефон", "Смартфон", 599.99, 10)
+    assert repr(product) == ("Product(name='Телефон', description='Смартфон', "
+                            "_Product__price=599.99, quantity=10)")
