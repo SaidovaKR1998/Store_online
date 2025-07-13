@@ -6,14 +6,6 @@ class Smartphone(Product):
 
     def __init__(self, name: str, description: str, price: float, quantity: int,
                  efficiency: float, model: str, memory: int, color: str):
-        """
-        Инициализация смартфона.
-
-        :param efficiency: Производительность
-        :param model: Модель
-        :param memory: Объем памяти (ГБ)
-        :param color: Цвет
-        """
         super().__init__(name, description, price, quantity)
         self.efficiency = efficiency
         self.model = model
@@ -25,3 +17,7 @@ class Smartphone(Product):
         if not isinstance(other, Smartphone):
             raise TypeError("Можно складывать только объекты класса Smartphone")
         return super().__add__(other)
+
+    def __repr__(self):
+        attrs = ', '.join([f"{key}={value!r}" for key, value in self.__dict__.items()])
+        return f"{self.__class__.__name__}({attrs})"
