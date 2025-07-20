@@ -22,6 +22,15 @@ class Category:
         Category.category_count += 1
         Category.product_count += len(products)
 
+    def middle_price(self):
+        """Метод для подсчета средней цены товаров в категории."""
+        try:
+            total_price = sum(product.price for product in self.__products)
+            return total_price / len(self.__products)
+        except ZeroDivisionError:
+            return 0
+
+
     def add_product(self, product):
         """
         Метод для добавления товара в категорию.
