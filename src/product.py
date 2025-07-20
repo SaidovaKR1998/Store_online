@@ -25,6 +25,9 @@ class Product(LogCreationMixin, BaseProduct):
     """Класс для представления товара."""
 
     def __init__(self, name: str, description: str, price: float, quantity: int):
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
+
         super().__init__(name, description, price, quantity)
         self.name = name
         self.description = description
@@ -35,6 +38,7 @@ class Product(LogCreationMixin, BaseProduct):
             raise ValueError("Цена должна быть положительной.")
         if quantity < 0:
             raise ValueError("Количество не может быть отрицательным.")
+
 
     @classmethod
     def new_product(cls, product_data: dict):
