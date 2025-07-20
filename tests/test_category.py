@@ -33,3 +33,25 @@ def test_product_count():
     category = Category("Тест", "Тест", [product1, product2])
 
     assert Category.product_count == initial_count + 2
+
+
+def test_middle_price_with_products():
+    """Тест расчета средней цены с товарами."""
+    product1 = Product("Product1", "Desc1", 100.0, 10)
+    product2 = Product("Product2", "Desc2", 200.0, 5)
+    category = Category("Test", "Test desc", [product1, product2])
+
+    assert category.middle_price() == 150.0
+
+
+def test_middle_price_empty_category():
+    """Тест расчета средней цены без товаров."""
+    category = Category("Empty", "Empty desc", [])
+    assert category.middle_price() == 0
+
+
+def test_middle_price_single_product():
+    """Тест расчета средней цены с одним товаром."""
+    product = Product("Product", "Desc", 100.0, 10)
+    category = Category("Single", "Single desc", [product])
+    assert category.middle_price() == 100.0
